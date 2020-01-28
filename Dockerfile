@@ -1,7 +1,7 @@
 FROM python:3.8-slim-buster as locker
 
-COPY ./Pipfile /app/
-COPY ./Pipfile.lock /app/
+COPY ./Pipfile /
+COPY ./Pipfile.lock /
 
 WORKDIR /app/
 
@@ -11,16 +11,13 @@ RUN pip install pipenv && \
 
 FROM python:3.8-slim-buster
 
-COPY --from=locker /app/requirements.txt /app/
-COPY --from=locker /app/requirements-dev.txt /app/
+ENV PYTHONUNBUFFERED=1
 
-WORKDIR /app/
+COPY --from=locker /app/requirements.txt /
+COPY --from=locker /app/requirements-dev.txt /
 
 RUN pip install -r requirements.txt  --no-cache-dir
 
-COPY ./one-influxdb.py /app/
-COPY ./run.sh /app/
+COPY ./one-influxdb.py /
 
-WORKDIR /app/
-
-CMD [ "/app/run.sh" ]
+CMD [ "python", "/one-influxdb.py" ]
