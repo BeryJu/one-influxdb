@@ -180,7 +180,7 @@ class Collector:
                 print(f"[collection] error: {exc}")
         try:
             self.influx.write_points(all_points)
-            print(f"Wrote {len(all_points)} Metrics")
+            print(f"[influx] wrote {len(all_points)} Metrics")
         except ConnectionError as exc:
             print(f"[influx] error: {exc}")
 
