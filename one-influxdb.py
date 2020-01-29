@@ -18,10 +18,10 @@ class Collector:
     _auth_string: str
 
     def __init__(
-        self, one_server: str, one_user: str, one_password: str, influx_kwargs
+        self, one_server: str, one_auth: str, influx_kwargs
     ):
         self.one_client = ServerProxy(one_server)
-        self._auth_string = f"{one_user}:{one_password}"
+        self._auth_string = one_auth
         self.influx = InfluxDBClient(**influx_kwargs)
 
     def collect_host(self) -> List[Dict[Any, Any]]:
@@ -186,8 +186,7 @@ class Collector:
 
 if __name__ == "__main__":
     ONE_SERVER = os.getenv("ONE_SERVER", "http://localhost:2633")
-    ONE_USER = os.getenv("ONE_USER")
-    ONE_PASSWORD = os.getenv("ONE_PASSWORD")
+    one_auth = open("/var/lib/one/.one/one_auth", "r").read().rstrip("\n")
 
     INFLUX_SERVER = os.getenv("INFLUX_SERVER", "localhost")
     INFLUX_PORT = int(os.getenv("INFLUX_PORT", "8086"))
@@ -197,8 +196,7 @@ if __name__ == "__main__":
 
     c = Collector(
         ONE_SERVER,
-        ONE_USER,
-        ONE_PASSWORD,
+        one_auth,
         {"host": INFLUX_SERVER, "port": INFLUX_PORT, "database": INFLUX_DB,},
     )
     while True:

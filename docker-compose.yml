@@ -23,9 +23,9 @@ services:
   collector:
     build:
       context: .
+    volumes:
+      - /var/lib/one/.one/one_auth:/var/lib/one/.one/one_auth:ro
     image: registry.haufe.io/langhammerj/one-influxdb
     environment:
       # ONE_SERVER: 'http://localhost:2633'
-      # ONE_USER: oneadmin
-      # ONE_PASSWORD: oneadmin
       INFLUX_SERVER: influxdb
