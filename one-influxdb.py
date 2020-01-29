@@ -71,38 +71,37 @@ class Collector:
         )
         points = []
         for group in group_pool.xpath("GROUP"):
-
             # graph performance data
             group_id = int(group.findtext("ID"))
+            if group_id < 1:
+                print(f"[collect_vdc] Ignoring group {group_id}")
+                continue
 
             for quota in group_pool.xpath("QUOTAS"):
                 quota_id = int(quota.findtext("ID"))
                 if quota_id == group_id:
                     group_name = group.xpath("NAME")[0].text
-                    try:
-                        # push metrics to influx
-                        points += [
-                            {
-                                "measurement": "quota",
-                                "tags": {"group": group_name,},
-                                "fields": {
-                                    "cpu": quota.xpath("VM_QUOTA/VM/CPU")[0].text,
-                                    "cpu_used": quota.xpath("VM_QUOTA/VM/CPU_USED")[
-                                        0
-                                    ].text,
-                                    "memory": quota.xpath("VM_QUOTA/VM/MEMORY")[0].text,
-                                    "memory_used": quota.xpath(
-                                        "VM_QUOTA/VM/MEMORY_USED"
-                                    )[0].text,
-                                    "vms": quota.xpath("VM_QUOTA/VM/VMS")[0].text,
-                                    "vms_used": quota.xpath("VM_QUOTA/VM/VMS_USED")[
-                                        0
-                                    ].text,
-                                },
+                    # push metrics to influx
+                    points += [
+                        {
+                            "measurement": "quota",
+                            "tags": {"group": group_name,},
+                            "fields": {
+                                "cpu": float(quota.xpath("VM_QUOTA/VM/CPU")[0].text),
+                                "cpu_used": float(quota.xpath("VM_QUOTA/VM/CPU_USED")[
+                                    0
+                                ].text),
+                                "memory": float(quota.xpath("VM_QUOTA/VM/MEMORY")[0].text),
+                                "memory_used": float(quota.xpath(
+                                    "VM_QUOTA/VM/MEMORY_USED"
+                                )[0].text),
+                                "vms": float(quota.xpath("VM_QUOTA/VM/VMS")[0].text),
+                                "vms_used": float(quota.xpath("VM_QUOTA/VM/VMS_USED")[
+                                    0
+                                ].text),
                             },
-                        ]
-                    except:
-                        continue
+                        },
+                    ]
         return points
 
     def collect_vm(self) -> List[Dict[Any, Any]]:
