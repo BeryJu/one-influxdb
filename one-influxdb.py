@@ -118,13 +118,14 @@ class Collector:
             )[1]
         )
         for vm in vm_pool.xpath("//VM"):
-            vm_id = vm.find("ID").text
+            vm_id = vm.findtext("ID")
+            vm_name = vm.findtext("NAME")
             mon = vm.find("MONITORING")
 
             points += [
                 {
                     "measurement": "vm",
-                    "tags": {"vm_id": vm_id},
+                    "tags": {"vm_id": vm_id, "vm_name": vm_name},
                     "fields": {
                         "disk_read_iops": int(mon.findtext("DISKRDIOPS")),
                         "disk_read_bytes": int(mon.findtext("DISKRDBYTES")),
