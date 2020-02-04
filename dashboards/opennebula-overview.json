@@ -16,7 +16,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": 1,
-  "iteration": 1580250519092,
+  "iteration": 1580810556126,
   "links": [],
   "panels": [
     {
@@ -325,7 +325,7 @@
           "groupBy": [
             {
               "params": [
-                "5m"
+                "1m"
               ],
               "type": "time"
             },
@@ -1447,7 +1447,7 @@
     ]
   },
   "time": {
-    "from": "now-24h",
+    "from": "now-7d",
     "to": "now"
   },
   "timepicker": {
@@ -1479,5 +1479,5 @@
   "timezone": "browser",
   "title": "OpenNebula - Overview (Zones + Cluster + Ressources)",
   "uid": "RyVN0wyZk",
-  "version": 12
+  "version": 14
 }

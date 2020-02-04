@@ -1,0 +1,1161 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "gnetId": null,
+  "graphTooltip": 0,
+  "id": 5,
+  "iteration": 1580810604001,
+  "links": [],
+  "panels": [
+    {
+      "collapsed": false,
+      "datasource": null,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 7,
+      "panels": [],
+      "repeat": "vm_id",
+      "scopedVars": {
+        "vm_id": {
+          "selected": true,
+          "text": "341",
+          "value": "341"
+        }
+      },
+      "title": "VM $vm_id",
+      "type": "row"
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 10,
+        "w": 6,
+        "x": 0,
+        "y": 1
+      },
+      "hiddenSeries": false,
+      "id": 2,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "scopedVars": {
+        "vm_id": {
+          "selected": true,
+          "text": "341",
+          "value": "341"
+        }
+      },
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "none"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "vm",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "cpu"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "vm_id",
+              "operator": "=~",
+              "value": "/^$vm_id$/"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "VM CPU Usage",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "percent",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 10,
+        "w": 6,
+        "x": 6,
+        "y": 1
+      },
+      "hiddenSeries": false,
+      "id": 3,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "scopedVars": {
+        "vm_id": {
+          "selected": true,
+          "text": "341",
+          "value": "341"
+        }
+      },
+      "seriesOverrides": [
+        {
+          "alias": "Write Bytes",
+          "transform": "negative-Y"
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "Read Bytes",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "none"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "vm",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "disk_read_bytes"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "vm_id",
+              "operator": "=~",
+              "value": "/^$vm_id$/"
+            }
+          ]
+        },
+        {
+          "alias": "Write Bytes",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "none"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "vm",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "disk_write_bytes"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "vm_id",
+              "operator": "=~",
+              "value": "/^$vm_id$/"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "VM Disk Bytes",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "bytes",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 10,
+        "w": 6,
+        "x": 12,
+        "y": 1
+      },
+      "hiddenSeries": false,
+      "id": 4,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "scopedVars": {
+        "vm_id": {
+          "selected": true,
+          "text": "341",
+          "value": "341"
+        }
+      },
+      "seriesOverrides": [
+        {
+          "alias": "Write Bytes",
+          "transform": "negative-Y"
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "Read Bytes",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "none"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "vm",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "disk_read_iops"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "vm_id",
+              "operator": "=~",
+              "value": "/^$vm_id$/"
+            }
+          ]
+        },
+        {
+          "alias": "Write Bytes",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "none"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "vm",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "disk_write_iops"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "vm_id",
+              "operator": "=~",
+              "value": "/^$vm_id$/"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "VM Disk IOPS",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "iops",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 10,
+        "w": 6,
+        "x": 18,
+        "y": 1
+      },
+      "hiddenSeries": false,
+      "id": 5,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "scopedVars": {
+        "vm_id": {
+          "selected": true,
+          "text": "341",
+          "value": "341"
+        }
+      },
+      "seriesOverrides": [
+        {
+          "alias": "Net TX",
+          "transform": "negative-Y"
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "Net RX",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "none"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "vm",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "net_rx"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "vm_id",
+              "operator": "=~",
+              "value": "/^$vm_id$/"
+            }
+          ]
+        },
+        {
+          "alias": "Net TX",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "none"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "vm",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "net_tx"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "vm_id",
+              "operator": "=~",
+              "value": "/^$vm_id$/"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "VM Network RX/TX",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "bytes",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    }
+  ],
+  "schemaVersion": 22,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "allValue": null,
+        "current": {
+          "text": "139",
+          "value": "139"
+        },
+        "datasource": "InfluxDB",
+        "definition": "SHOW TAG VALUES with key= \"vm_id\"",
+        "hide": 0,
+        "includeAll": false,
+        "label": "VM ID",
+        "multi": true,
+        "name": "vm_id",
+        "options": [
+          {
+            "selected": false,
+            "text": "139",
+            "value": "139"
+          },
+          {
+            "selected": false,
+            "text": "340",
+            "value": "340"
+          },
+          {
+            "selected": true,
+            "text": "341",
+            "value": "341"
+          },
+          {
+            "selected": false,
+            "text": "342",
+            "value": "342"
+          },
+          {
+            "selected": false,
+            "text": "346",
+            "value": "346"
+          },
+          {
+            "selected": false,
+            "text": "368",
+            "value": "368"
+          },
+          {
+            "selected": false,
+            "text": "369",
+            "value": "369"
+          },
+          {
+            "selected": false,
+            "text": "370",
+            "value": "370"
+          },
+          {
+            "selected": false,
+            "text": "372",
+            "value": "372"
+          },
+          {
+            "selected": false,
+            "text": "373",
+            "value": "373"
+          },
+          {
+            "selected": false,
+            "text": "469",
+            "value": "469"
+          },
+          {
+            "selected": false,
+            "text": "554",
+            "value": "554"
+          },
+          {
+            "selected": false,
+            "text": "575",
+            "value": "575"
+          },
+          {
+            "selected": false,
+            "text": "576",
+            "value": "576"
+          },
+          {
+            "selected": false,
+            "text": "577",
+            "value": "577"
+          },
+          {
+            "selected": false,
+            "text": "582",
+            "value": "582"
+          },
+          {
+            "selected": false,
+            "text": "586",
+            "value": "586"
+          },
+          {
+            "selected": false,
+            "text": "588",
+            "value": "588"
+          },
+          {
+            "selected": false,
+            "text": "602",
+            "value": "602"
+          },
+          {
+            "selected": false,
+            "text": "603",
+            "value": "603"
+          },
+          {
+            "selected": false,
+            "text": "604",
+            "value": "604"
+          },
+          {
+            "selected": false,
+            "text": "615",
+            "value": "615"
+          },
+          {
+            "selected": false,
+            "text": "625",
+            "value": "625"
+          },
+          {
+            "selected": false,
+            "text": "642",
+            "value": "642"
+          },
+          {
+            "selected": false,
+            "text": "644",
+            "value": "644"
+          },
+          {
+            "selected": false,
+            "text": "645",
+            "value": "645"
+          },
+          {
+            "selected": false,
+            "text": "646",
+            "value": "646"
+          },
+          {
+            "selected": false,
+            "text": "672",
+            "value": "672"
+          },
+          {
+            "selected": false,
+            "text": "679",
+            "value": "679"
+          },
+          {
+            "selected": false,
+            "text": "681",
+            "value": "681"
+          },
+          {
+            "selected": false,
+            "text": "683",
+            "value": "683"
+          },
+          {
+            "selected": false,
+            "text": "697",
+            "value": "697"
+          },
+          {
+            "selected": false,
+            "text": "698",
+            "value": "698"
+          },
+          {
+            "selected": false,
+            "text": "699",
+            "value": "699"
+          },
+          {
+            "selected": false,
+            "text": "712",
+            "value": "712"
+          },
+          {
+            "selected": false,
+            "text": "715",
+            "value": "715"
+          },
+          {
+            "selected": false,
+            "text": "717",
+            "value": "717"
+          },
+          {
+            "selected": false,
+            "text": "719",
+            "value": "719"
+          },
+          {
+            "selected": false,
+            "text": "723",
+            "value": "723"
+          },
+          {
+            "selected": false,
+            "text": "732",
+            "value": "732"
+          },
+          {
+            "selected": false,
+            "text": "734",
+            "value": "734"
+          },
+          {
+            "selected": false,
+            "text": "735",
+            "value": "735"
+          },
+          {
+            "selected": false,
+            "text": "737",
+            "value": "737"
+          },
+          {
+            "selected": false,
+            "text": "763",
+            "value": "763"
+          },
+          {
+            "selected": false,
+            "text": "764",
+            "value": "764"
+          },
+          {
+            "selected": false,
+            "text": "765",
+            "value": "765"
+          },
+          {
+            "selected": false,
+            "text": "766",
+            "value": "766"
+          },
+          {
+            "selected": false,
+            "text": "769",
+            "value": "769"
+          },
+          {
+            "selected": false,
+            "text": "778",
+            "value": "778"
+          },
+          {
+            "selected": false,
+            "text": "797",
+            "value": "797"
+          },
+          {
+            "selected": false,
+            "text": "798",
+            "value": "798"
+          },
+          {
+            "selected": false,
+            "text": "802",
+            "value": "802"
+          },
+          {
+            "selected": false,
+            "text": "814",
+            "value": "814"
+          },
+          {
+            "selected": false,
+            "text": "819",
+            "value": "819"
+          },
+          {
+            "selected": false,
+            "text": "820",
+            "value": "820"
+          },
+          {
+            "selected": false,
+            "text": "821",
+            "value": "821"
+          },
+          {
+            "selected": false,
+            "text": "822",
+            "value": "822"
+          },
+          {
+            "selected": false,
+            "text": "823",
+            "value": "823"
+          },
+          {
+            "selected": false,
+            "text": "825",
+            "value": "825"
+          },
+          {
+            "selected": false,
+            "text": "826",
+            "value": "826"
+          },
+          {
+            "selected": false,
+            "text": "828",
+            "value": "828"
+          },
+          {
+            "selected": false,
+            "text": "829",
+            "value": "829"
+          },
+          {
+            "selected": false,
+            "text": "836",
+            "value": "836"
+          },
+          {
+            "selected": false,
+            "text": "837",
+            "value": "837"
+          },
+          {
+            "selected": false,
+            "text": "841",
+            "value": "841"
+          },
+          {
+            "selected": false,
+            "text": "842",
+            "value": "842"
+          },
+          {
+            "selected": false,
+            "text": "843",
+            "value": "843"
+          },
+          {
+            "selected": false,
+            "text": "844",
+            "value": "844"
+          },
+          {
+            "selected": false,
+            "text": "845",
+            "value": "845"
+          },
+          {
+            "selected": false,
+            "text": "846",
+            "value": "846"
+          },
+          {
+            "selected": false,
+            "text": "847",
+            "value": "847"
+          },
+          {
+            "selected": false,
+            "text": "864",
+            "value": "864"
+          },
+          {
+            "selected": false,
+            "text": "865",
+            "value": "865"
+          },
+          {
+            "selected": false,
+            "text": "866",
+            "value": "866"
+          },
+          {
+            "selected": false,
+            "text": "867",
+            "value": "867"
+          },
+          {
+            "selected": false,
+            "text": "868",
+            "value": "868"
+          },
+          {
+            "selected": false,
+            "text": "869",
+            "value": "869"
+          },
+          {
+            "selected": false,
+            "text": "870",
+            "value": "870"
+          }
+        ],
+        "query": "SHOW TAG VALUES with key= \"vm_id\"",
+        "refresh": 0,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      }
+    ]
+  },
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "5s",
+      "10s",
+      "30s",
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ]
+  },
+  "timezone": "",
+  "title": "OpenNebula - VM Overview",
+  "uid": "kWG8ClsWz",
+  "version": 2
+}
