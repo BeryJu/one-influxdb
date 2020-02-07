@@ -21,12 +21,9 @@ services:
     volumes:
       - "./grafana/:/var/lib/grafana"
   collector:
-    build:
-      context: .
     volumes:
       - /var/lib/one/.one/one_auth:/var/lib/one/.one/one_auth:ro
-    image: registry.haufe.io/langhammerj/one-influxdb
+    image: beryju/one-influxdb:latest
     environment:
       # ONE_SERVER: 'http://localhost:2633'
       INFLUX_SERVER: influxdb
-
