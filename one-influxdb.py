@@ -3,6 +3,7 @@ import os
 from time import sleep, time
 from typing import Any, Dict, List
 from xmlrpc.client import ServerProxy
+from traceback import print_exc
 
 from lxml import etree
 
@@ -178,11 +179,13 @@ class Collector:
                 all_points += col()
             except Exception as exc:
                 print(f"[collection] error: {exc}")
+                print_exc()
         try:
             self.influx.write_points(all_points)
             print(f"[influx] wrote {len(all_points)} Metrics")
         except ConnectionError as exc:
             print(f"[influx] error: {exc}")
+            print_exc()
 
 if __name__ == "__main__":
     ONE_SERVER = os.getenv("ONE_SERVER", "http://localhost:2633")
