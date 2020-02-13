@@ -18,9 +18,7 @@ class Collector:
     one_client: ServerProxy
     _auth_string: str
 
-    def __init__(
-        self, one_server: str, one_auth: str, influx_kwargs
-    ):
+    def __init__(self, one_server: str, one_auth: str, influx_kwargs):
         self.one_client = ServerProxy(one_server)
         self._auth_string = one_auth
         self.influx = InfluxDBClient(**influx_kwargs)
@@ -89,17 +87,19 @@ class Collector:
                             "tags": {"group": group_name,},
                             "fields": {
                                 "cpu": float(quota.xpath("VM_QUOTA/VM/CPU")[0].text),
-                                "cpu_used": float(quota.xpath("VM_QUOTA/VM/CPU_USED")[
-                                    0
-                                ].text),
-                                "memory": float(quota.xpath("VM_QUOTA/VM/MEMORY")[0].text),
-                                "memory_used": float(quota.xpath(
-                                    "VM_QUOTA/VM/MEMORY_USED"
-                                )[0].text),
+                                "cpu_used": float(
+                                    quota.xpath("VM_QUOTA/VM/CPU_USED")[0].text
+                                ),
+                                "memory": float(
+                                    quota.xpath("VM_QUOTA/VM/MEMORY")[0].text
+                                ),
+                                "memory_used": float(
+                                    quota.xpath("VM_QUOTA/VM/MEMORY_USED")[0].text
+                                ),
                                 "vms": float(quota.xpath("VM_QUOTA/VM/VMS")[0].text),
-                                "vms_used": float(quota.xpath("VM_QUOTA/VM/VMS_USED")[
-                                    0
-                                ].text),
+                                "vms_used": float(
+                                    quota.xpath("VM_QUOTA/VM/VMS_USED")[0].text
+                                ),
                             },
                         },
                     ]
