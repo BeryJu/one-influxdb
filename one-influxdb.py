@@ -31,13 +31,25 @@ class Collector:
         )
         for host in host_pool.xpath("//HOST"):
             # host performance data
-            cluster = host.find("CLUSTER").text
-            hostname = host.find("NAME").text
+
+            tags = {
+                "cluster": host.find("CLUSTER").text,
+                "host": host.find("NAME").text,
+                "version": host.find("TEMPLATE/VERSION").text,
+                "cpu": host.find("TEMPLATE/MODELNAME").text,
+                "hypervisor": host.find("TEMPLATE/HYPERVISOR").text,
+            }
+
+            zombies = host.find("TEMPLATE/TOTAL_ZOMBIES")
+            if zombies is not None:
+                zombies = int(zombies.text)
+            else:
+                zombies = 0
 
             points += [
                 {
                     "measurement": "host_cpu",
-                    "tags": {"cluster": cluster, "host": hostname},
+                    "tags": tags,
                     "fields": {
                         "usage": int(host.find("HOST_SHARE/CPU_USAGE").text),
                         "max": int(host.find("HOST_SHARE/MAX_CPU").text),
@@ -47,7 +59,7 @@ class Collector:
                 },
                 {
                     "measurement": "host_memory",
-                    "tags": {"cluster": cluster, "host": hostname},
+                    "tags": tags,
                     "fields": {
                         "usage": int(host.find("HOST_SHARE/MEM_USAGE").text),
                         "max": int(host.find("HOST_SHARE/MAX_MEM").text),
@@ -56,9 +68,20 @@ class Collector:
                     },
                 },
                 {
+                    "measurement": "host_network",
+                    "tags": tags,
+                    "fields": {
+                        "net_rx": int(host.find("TEMPLATE/NETRX").text),
+                        "net_tx": int(host.find("TEMPLATE/NETTX").text),
+                    },
+                },
+                {
                     "measurement": "rvms",
-                    "tags": {"cluster": cluster, "host": hostname},
-                    "fields": {"value": int(host.find("HOST_SHARE/RUNNING_VMS").text),},
+                    "tags": tags,
+                    "fields": {
+                        "value": int(host.find("HOST_SHARE/RUNNING_VMS").text),
+                        "zombies": zombies,
+                    },
                 },
             ]
         return points
