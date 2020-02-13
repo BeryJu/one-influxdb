@@ -187,9 +187,15 @@ class Collector:
             print(f"[influx] error: {exc}")
             print_exc()
 
+
 if __name__ == "__main__":
     ONE_SERVER = os.getenv("ONE_SERVER", "http://localhost:2633")
-    one_auth = open("/var/lib/one/.one/one_auth", "r").read().rstrip("\n")
+    try:
+        ONE_AUTH = open("/var/lib/one/.one/one_auth", "r").read().rstrip("\n")
+    except FileNotFoundError:
+        ONE_AUTH = (
+            f"{os.getenv('ONE_USER', 'oneadmin')}:{os.getenv('ONE_PASS', 'oneadmin')}"
+        )
 
     INFLUX_SERVER = os.getenv("INFLUX_SERVER", "localhost")
     INFLUX_PORT = int(os.getenv("INFLUX_PORT", "8086"))
@@ -199,9 +205,13 @@ if __name__ == "__main__":
 
     c = Collector(
         ONE_SERVER,
-        one_auth,
+        ONE_AUTH,
         {"host": INFLUX_SERVER, "port": INFLUX_PORT, "database": INFLUX_DB,},
     )
+    print(
+        f"[main] collecting from server {ONE_SERVER} as user {ONE_AUTH.split(':')[0]}"
+    )
+    print(f"[main] writing to server {INFLUX_SERVER}:{INFLUX_PORT}/{INFLUX_DB}")
     while True:
         start_time = time()
         print("[collection] start")
