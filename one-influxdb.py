@@ -29,6 +29,9 @@ class Collector:
         host_pool = etree.fromstring(
             self.one_client.one.hostpool.info(self._auth_string)[1]
         )
+        host_mon = etree.fromstring(
+            self.one_client.one.hostpool.monitoring(self._auth_string)[1]
+        )
         for host in host_pool.xpath("//HOST"):
             # host performance data
 
@@ -46,33 +49,34 @@ class Collector:
             else:
                 zombies = 0
 
+            # Returns the first CAPACITY object where the Host ID matches the current host
+            host_id = host.find('ID').text
+            monitoring_all = host_mon.xpath(f"(//MONITORING/ID[text()={host_id}])[1]/../CAPACITY")
+            if not monitoring_all:
+                print(f"[collect_host] No Monitoring found for host {host_id}, ignoring")
+                continue
+            monitoring = monitoring_all[0]
             points += [
                 {
                     "measurement": "host_cpu",
                     "tags": tags,
                     "fields": {
-                        "usage": int(host.find("HOST_SHARE/CPU_USAGE").text),
-                        "max": int(host.find("HOST_SHARE/MAX_CPU").text),
-                        "used": int(host.find("HOST_SHARE/USED_CPU").text),
-                        "free": int(host.find("HOST_SHARE/USED_CPU").text),
+                        "allocated": int(host.find("HOST_SHARE/CPU_USAGE").text),
+                        "total": int(host.find("HOST_SHARE/MAX_CPU").text),
+
+                        "used": int(monitoring.find("USED_CPU").text),
+                        "free": int(monitoring.find("FREE_CPU").text),
                     },
                 },
                 {
                     "measurement": "host_memory",
                     "tags": tags,
                     "fields": {
-                        "usage": int(host.find("HOST_SHARE/MEM_USAGE").text),
-                        "max": int(host.find("HOST_SHARE/MAX_MEM").text),
-                        "used": int(host.find("HOST_SHARE/USED_MEM").text),
-                        "free": int(host.find("HOST_SHARE/FREE_MEM").text),
-                    },
-                },
-                {
-                    "measurement": "host_network",
-                    "tags": tags,
-                    "fields": {
-                        "net_rx": int(host.find("TEMPLATE/NETRX").text),
-                        "net_tx": int(host.find("TEMPLATE/NETTX").text),
+                        "allocated": int(host.find("HOST_SHARE/MEM_USAGE").text),
+                        "total": int(host.find("HOST_SHARE/MAX_MEM").text),
+
+                        "used": int(monitoring.find("USED_MEMORY").text),
+                        "free": int(monitoring.find("FREE_MEMORY").text),
                     },
                 },
                 {
@@ -103,6 +107,10 @@ class Collector:
                 quota_id = int(quota.findtext("ID"))
                 if quota_id == group_id:
                     group_name = group.xpath("NAME")[0].text
+                    # Check if this VDC has quota data
+                    if not quota.xpath("VM_QUOTA/VM"):
+                        print(f"[collect_vdc] Ignoring group {group_id} (no quota data found)")
+                        continue
                     # push metrics to influx
                     points += [
                         {
@@ -193,8 +201,8 @@ class Collector:
         all_points = []
         collectors = [
             self.collect_host,
-            self.collect_vdc,
-            self.collect_vm,
+            # self.collect_vdc,
+            # self.collect_vm,
             self.collect_datastore,
         ]
         for col in collectors:
