@@ -50,10 +50,14 @@ class Collector:
                 zombies = 0
 
             # Returns the first CAPACITY object where the Host ID matches the current host
-            host_id = host.find('ID').text
-            monitoring_all = host_mon.xpath(f"(//MONITORING/ID[text()={host_id}])[1]/../CAPACITY")
+            host_id = host.find("ID").text
+            monitoring_all = host_mon.xpath(
+                f"(//MONITORING/ID[text()={host_id}])[1]/../CAPACITY"
+            )
             if not monitoring_all:
-                print(f"[collect_host] No Monitoring found for host {host_id}, ignoring")
+                print(
+                    f"[collect_host] No Monitoring found for host {host_id}, ignoring"
+                )
                 continue
             monitoring = monitoring_all[0]
             points += [
@@ -63,7 +67,6 @@ class Collector:
                     "fields": {
                         "allocated": int(host.find("HOST_SHARE/CPU_USAGE").text),
                         "total": int(host.find("HOST_SHARE/MAX_CPU").text),
-
                         "used": int(monitoring.find("USED_CPU").text),
                         "free": int(monitoring.find("FREE_CPU").text),
                     },
@@ -74,7 +77,6 @@ class Collector:
                     "fields": {
                         "allocated": int(host.find("HOST_SHARE/MEM_USAGE").text),
                         "total": int(host.find("HOST_SHARE/MAX_MEM").text),
-
                         "used": int(monitoring.find("USED_MEMORY").text),
                         "free": int(monitoring.find("FREE_MEMORY").text),
                     },
@@ -109,7 +111,9 @@ class Collector:
                     group_name = group.xpath("NAME")[0].text
                     # Check if this VDC has quota data
                     if not quota.xpath("VM_QUOTA/VM"):
-                        print(f"[collect_vdc] Ignoring group {group_id} (no quota data found)")
+                        print(
+                            f"[collect_vdc] Ignoring group {group_id} (no quota data found)"
+                        )
                         continue
                     # push metrics to influx
                     points += [
@@ -148,11 +152,22 @@ class Collector:
                 3,  # Only active VMs
             )[1]
         )
+
+        monitoring = etree.fromstring(
+            self.one_client.one.vmpool.monitoring(
+                self._auth_string, -2, 0  # Session  # All Items  # Only last records
+            )[1]
+        )
+
         for vm in vm_pool.xpath("//VM"):
             vm_id = vm.findtext("ID")
             vm_name = vm.findtext("NAME")
-            mon = vm.find("MONITORING")
+            mon_all = monitoring.xpath(f"(//MONITORING/ID[text()={vm_id}])[1]/..")
 
+            if not mon_all:
+                print(f"[collect_vm] No Monitoring found for VM {vm_id}")
+                continue
+            mon = mon_all[0]
             points += [
                 {
                     "measurement": "vm",
@@ -202,7 +217,7 @@ class Collector:
         collectors = [
             self.collect_host,
             # self.collect_vdc,
-            # self.collect_vm,
+            self.collect_vm,
             self.collect_datastore,
         ]
         for col in collectors:
