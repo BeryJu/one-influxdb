@@ -30,7 +30,7 @@ class Collector:
             self.one_client.one.hostpool.info(self._auth_string)[1]
         )
         host_mon = etree.fromstring(
-            self.one_client.one.hostpool.monitoring(self._auth_string)[1]
+            self.one_client.one.hostpool.monitoring(self._auth_string, 0)[1]
         )
         for host in host_pool.xpath("//HOST"):
             # host performance data
