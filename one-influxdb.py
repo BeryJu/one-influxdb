@@ -101,6 +101,7 @@ class Collector:
         for group in group_pool.xpath("GROUP"):
             # graph performance data
             group_id = int(group.findtext("ID"))
+            # oneadmin doesn't have metrics
             if group_id < 1:
                 print(f"[collect_vdc] Ignoring group {group_id}")
                 continue
@@ -131,9 +132,37 @@ class Collector:
                                 "memory_used": float(
                                     quota.xpath("VM_QUOTA/VM/MEMORY_USED")[0].text
                                 ),
+                                "running_cpu": float(
+                                    quota.xpath("VM_QUOTA/VM/RUNNING_CPU")[0].text
+                                ),
+                                "running_cpu_used": float(
+                                    quota.xpath("VM_QUOTA/VM/RUNNING_CPU_USED")[0].text
+                                ),
+                                "running_memory": float(
+                                    quota.xpath("VM_QUOTA/VM/RUNNING_MEMORY")[0].text
+                                ),
+                                "running_memory_used": float(
+                                    quota.xpath("VM_QUOTA/VM/RUNNING_MEMORY_USED")[
+                                        0
+                                    ].text
+                                ),
                                 "vms": float(quota.xpath("VM_QUOTA/VM/VMS")[0].text),
                                 "vms_used": float(
                                     quota.xpath("VM_QUOTA/VM/VMS_USED")[0].text
+                                ),
+                                "running_vms": float(
+                                    quota.xpath("VM_QUOTA/VM/RUNNING_VMS")[0].text
+                                ),
+                                "running_vms_used": float(
+                                    quota.xpath("VM_QUOTA/VM/RUNNING_VMS_USED")[0].text
+                                ),
+                                "system_disk_size": float(
+                                    quota.xpath("VM_QUOTA/VM/SYSTEM_DISK_SIZE")[0].text
+                                ),
+                                "system_disk_size_used": float(
+                                    quota.xpath("VM_QUOTA/VM/SYSTEM_DISK_SIZE_USED")[
+                                        0
+                                    ].text
                                 ),
                             },
                         },
@@ -216,7 +245,7 @@ class Collector:
         all_points = []
         collectors = [
             self.collect_host,
-            # self.collect_vdc,
+            self.collect_vdc,
             self.collect_vm,
             self.collect_datastore,
         ]
