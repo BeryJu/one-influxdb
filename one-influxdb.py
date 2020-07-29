@@ -308,5 +308,5 @@ if __name__ == "__main__":
         print("[collection] start")
         c.collect_all()
         end_time = time()
-        print(f"[collection] ended in {end_time - start_time}ms")
+        print(f"[collection] ended in {str(end_time - start_time)}")
         sleep(INTERVAL)
