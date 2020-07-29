@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import os
+from enum import IntEnum
 from time import sleep, time
 from typing import Any, Dict, List
 from xmlrpc.client import ServerProxy
@@ -9,6 +10,24 @@ from lxml import etree
 
 from influxdb import InfluxDBClient
 from requests.exceptions import ConnectionError
+
+
+HOST_STATES = IntEnum(
+    "HOST_STATES",
+    """INIT MONITORING_MONITORED MONITORED
+        ERROR DISABLED MONITORING_ERROR MONITORING_INIT MONITORING_DISABLED
+        OFFLINE""",
+    start=0,
+)
+
+
+def xml_get_fb(xml_obj, path) -> float:
+    """Get xpath value as float with fallback"""
+    obj = xml_obj.xpath(path)
+    if len(obj) < 1:
+        return 0
+    obj_text = obj[0].text
+    return float(obj_text)
 
 
 class Collector:
@@ -33,8 +52,15 @@ class Collector:
             self.one_client.one.hostpool.monitoring(self._auth_string, 0)[1]
         )
         for host in host_pool.xpath("//HOST"):
-            # host performance data
+            # Host is only monitored if its active
+            state = int(host.find("STATE").text)
+            if state != HOST_STATES.MONITORED:
+                print(
+                    f"[collect_host] Host {host.find('ID').text} is not in state monitored, skipping"
+                )
+                continue
 
+            # host performance data
             tags = {
                 "cluster": host.find("CLUSTER").text,
                 "host": host.find("NAME").text,
@@ -122,47 +148,37 @@ class Collector:
                             "measurement": "quota",
                             "tags": {"group": group_name,},
                             "fields": {
-                                "cpu": float(quota.xpath("VM_QUOTA/VM/CPU")[0].text),
-                                "cpu_used": float(
-                                    quota.xpath("VM_QUOTA/VM/CPU_USED")[0].text
+                                "cpu": xml_get_fb(quota, "VM_QUOTA/VM/CPU"),
+                                "cpu_used": xml_get_fb(quota, "VM_QUOTA/VM/CPU_USED"),
+                                "memory": xml_get_fb(quota, "VM_QUOTA/VM/MEMORY"),
+                                "memory_used": xml_get_fb(
+                                    quota, "VM_QUOTA/VM/MEMORY_USED"
                                 ),
-                                "memory": float(
-                                    quota.xpath("VM_QUOTA/VM/MEMORY")[0].text
+                                "running_cpu": xml_get_fb(
+                                    quota, "VM_QUOTA/VM/RUNNING_CPU"
                                 ),
-                                "memory_used": float(
-                                    quota.xpath("VM_QUOTA/VM/MEMORY_USED")[0].text
+                                "running_cpu_used": xml_get_fb(
+                                    quota, "VM_QUOTA/VM/RUNNING_CPU_USED"
                                 ),
-                                "running_cpu": float(
-                                    quota.xpath("VM_QUOTA/VM/RUNNING_CPU")[0].text
+                                "running_memory": xml_get_fb(
+                                    quota, "VM_QUOTA/VM/RUNNING_MEMORY"
                                 ),
-                                "running_cpu_used": float(
-                                    quota.xpath("VM_QUOTA/VM/RUNNING_CPU_USED")[0].text
+                                "running_memory_used": xml_get_fb(
+                                    quota, "VM_QUOTA/VM/RUNNING_MEMORY_USED"
                                 ),
-                                "running_memory": float(
-                                    quota.xpath("VM_QUOTA/VM/RUNNING_MEMORY")[0].text
+                                "vms": xml_get_fb(quota, "VM_QUOTA/VM/VMS"),
+                                "vms_used": xml_get_fb(quota, "VM_QUOTA/VM/VMS_USED"),
+                                "running_vms": xml_get_fb(
+                                    quota, "VM_QUOTA/VM/RUNNING_VMS"
                                 ),
-                                "running_memory_used": float(
-                                    quota.xpath("VM_QUOTA/VM/RUNNING_MEMORY_USED")[
-                                        0
-                                    ].text
+                                "running_vms_used": xml_get_fb(
+                                    quota, "VM_QUOTA/VM/RUNNING_VMS_USED"
                                 ),
-                                "vms": float(quota.xpath("VM_QUOTA/VM/VMS")[0].text),
-                                "vms_used": float(
-                                    quota.xpath("VM_QUOTA/VM/VMS_USED")[0].text
+                                "system_disk_size": xml_get_fb(
+                                    quota, "VM_QUOTA/VM/SYSTEM_DISK_SIZE"
                                 ),
-                                "running_vms": float(
-                                    quota.xpath("VM_QUOTA/VM/RUNNING_VMS")[0].text
-                                ),
-                                "running_vms_used": float(
-                                    quota.xpath("VM_QUOTA/VM/RUNNING_VMS_USED")[0].text
-                                ),
-                                "system_disk_size": float(
-                                    quota.xpath("VM_QUOTA/VM/SYSTEM_DISK_SIZE")[0].text
-                                ),
-                                "system_disk_size_used": float(
-                                    quota.xpath("VM_QUOTA/VM/SYSTEM_DISK_SIZE_USED")[
-                                        0
-                                    ].text
+                                "system_disk_size_used": xml_get_fb(
+                                    quota, "VM_QUOTA/VM/SYSTEM_DISK_SIZE_USED"
                                 ),
                             },
                         },
