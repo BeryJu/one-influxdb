@@ -8,6 +8,7 @@ verify_ssl = true
 [packages]
 influxdb = "*"
 lxml = "*"
+sentry-sdk = "*"
 
 [requires]
 python_version = "3.8"

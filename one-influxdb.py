@@ -10,7 +10,14 @@ from lxml import etree
 
 from influxdb import InfluxDBClient
 from requests.exceptions import ConnectionError
+from sentry_sdk import init, start_transaction
+from sentry_sdk.api import start_span
 
+init(
+    traces_sample_rate=1.0,
+    environment="production",
+    _experiments={"auto_enabling_integrations": True},
+)
 
 HOST_STATES = IntEnum(
     "HOST_STATES",
@@ -25,7 +32,7 @@ def xml_get_fb(xml_obj, path) -> float:
     """Get xpath value as float with fallback"""
     obj = xml_obj.xpath(path)
     if len(obj) < 1:
-        return 0
+        return float(0)
     obj_text = obj[0].text
     return float(obj_text)
 
@@ -265,18 +272,21 @@ class Collector:
             self.collect_vm,
             self.collect_datastore,
         ]
-        for col in collectors:
+        with start_transaction(op="collect_all") as trans:
+            for col in collectors:
+                try:
+                    with start_span(op=f"collect_{col.__name__}"):
+                        all_points += col()
+                except Exception as exc:
+                    print(f"[collection] error: {exc}")
+                    print_exc()
             try:
-                all_points += col()
-            except Exception as exc:
-                print(f"[collection] error: {exc}")
+                with start_span(op=f"write"):
+                    self.influx.write_points(all_points)
+                    print(f"[influx] wrote {len(all_points)} Metrics")
+            except ConnectionError as exc:
+                print(f"[influx] error: {exc}")
                 print_exc()
-        try:
-            self.influx.write_points(all_points)
-            print(f"[influx] wrote {len(all_points)} Metrics")
-        except ConnectionError as exc:
-            print(f"[influx] error: {exc}")
-            print_exc()
 
 
 if __name__ == "__main__":
