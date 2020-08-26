@@ -2,21 +2,23 @@
 import os
 from enum import IntEnum
 from time import sleep, time
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 from xmlrpc.client import ServerProxy
 from traceback import print_exc
 
 from lxml import etree
+from lxml.etree import _Element
 
 from influxdb import InfluxDBClient
 from requests.exceptions import ConnectionError
 from sentry_sdk import init, start_transaction
-from sentry_sdk.api import start_span
+from sentry_sdk.api import capture_exception, start_span
+from sentry_sdk.tracing import Transaction
 
 init(
+    dsn=os.getenv("SENTRY_DSN"),
     traces_sample_rate=1.0,
     environment="production",
-    _experiments={"auto_enabling_integrations": True},
 )
 
 HOST_STATES = IntEnum(
@@ -37,6 +39,10 @@ def xml_get_fb(xml_obj, path) -> float:
     return float(obj_text)
 
 
+class CollectorError(Exception):
+    pass
+
+
 class Collector:
 
     influx: InfluxDBClient
@@ -48,6 +54,16 @@ class Collector:
         self.one_client = ServerProxy(one_server)
         self._auth_string = one_auth
         self.influx = InfluxDBClient(**influx_kwargs)
+
+    def one_req(self, method, *args) -> Optional[_Element]:
+        calling_method = getattr(self.one_client, method)
+        try:
+            success, response, error = calling_method(self._auth_string, *args)
+            if success:
+                return etree.fromstring(response)
+            raise CollectorError(f"Request was not successful: {response}")
+        except ConnectionError as exc:
+            raise CollectorError from exc
 
     def collect_host(self) -> List[Dict[Any, Any]]:
         """VMM Host Performance Data / onehost performance"""
@@ -272,16 +288,19 @@ class Collector:
             self.collect_vm,
             self.collect_datastore,
         ]
-        with start_transaction(op="collect_all") as trans:
+        with start_transaction(
+            name="collection", description="Full Collection run"
+        ) as trans:
+            trans: Transaction
             for col in collectors:
                 try:
-                    with start_span(op=f"collect_{col.__name__}"):
+                    with trans.start_child(op=f"collect_{col.__name__}"):
                         all_points += col()
                 except Exception as exc:
                     print(f"[collection] error: {exc}")
                     print_exc()
             try:
-                with start_span(op=f"write"):
+                with trans.start_child(op=f"write"):
                     self.influx.write_points(all_points)
                     print(f"[influx] wrote {len(all_points)} Metrics")
             except ConnectionError as exc:
@@ -314,9 +333,8 @@ if __name__ == "__main__":
     )
     print(f"[main] writing to server {INFLUX_SERVER}:{INFLUX_PORT}/{INFLUX_DB}")
     while True:
-        start_time = time()
-        print("[collection] start")
-        c.collect_all()
-        end_time = time()
-        print(f"[collection] ended in {str(end_time - start_time)}")
+        try:
+            c.collect_all()
+        except CollectorError:
+            print("[collection] collection failed, continuing")
         sleep(INTERVAL)
