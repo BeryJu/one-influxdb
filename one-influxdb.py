@@ -16,9 +16,7 @@ from sentry_sdk.api import capture_exception, start_span
 from sentry_sdk.tracing import Transaction
 
 init(
-    dsn=os.getenv("SENTRY_DSN"),
-    traces_sample_rate=1.0,
-    environment="production",
+    dsn=os.getenv("SENTRY_DSN"), traces_sample_rate=1.0, environment="production",
 )
 
 HOST_STATES = IntEnum(
@@ -300,6 +298,7 @@ class Collector:
                         all_points += col()
                 except Exception as exc:
                     print(f"[collection] error: {exc}")
+                    capture_exception(exc)
                     print_exc()
             try:
                 with trans.start_child(op=f"write"):
@@ -307,6 +306,7 @@ class Collector:
                     print(f"[influx] wrote {len(all_points)} Metrics")
             except ConnectionError as exc:
                 print(f"[influx] error: {exc}")
+                capture_exception(exc)
                 print_exc()
 
 
