@@ -39,6 +39,14 @@ def xml_get_fb(xml_obj, path) -> float:
     return float(obj_text)
 
 
+def xml_find_fb(xml_obj, path, default=""):
+    """XML.find with a fallback"""
+    obj = xml_obj.find(path)
+    if obj:
+        return obj.text
+    return default
+
+
 class CollectorError(Exception):
     pass
 
@@ -85,18 +93,12 @@ class Collector:
 
             # host performance data
             tags = {
-                "cluster": host.find("CLUSTER").text,
-                "host": host.find("NAME").text,
-                "version": host.find("TEMPLATE/VERSION").text,
-                "cpu": host.find("TEMPLATE/MODELNAME").text,
-                "hypervisor": host.find("TEMPLATE/HYPERVISOR").text,
+                "cluster": xml_find_fb(host, "CLUSTER"),
+                "host": xml_find_fb(host, "NAME"),
+                "version": xml_find_fb(host, "TEMPLATE/VERSION"),
+                "cpu": xml_find_fb(host, "TEMPLATE/MODELNAME"),
+                "hypervisor": xml_find_fb(host, "TEMPLATE/HYPERVISOR"),
             }
-
-            zombies = host.find("TEMPLATE/TOTAL_ZOMBIES")
-            if zombies is not None:
-                zombies = int(zombies.text)
-            else:
-                zombies = 0
 
             # Returns the first CAPACITY object where the Host ID matches the current host
             host_id = host.find("ID").text
@@ -114,28 +116,28 @@ class Collector:
                     "measurement": "host_cpu",
                     "tags": tags,
                     "fields": {
-                        "allocated": int(host.find("HOST_SHARE/CPU_USAGE").text),
-                        "total": int(host.find("HOST_SHARE/MAX_CPU").text),
-                        "used": int(monitoring.find("USED_CPU").text),
-                        "free": int(monitoring.find("FREE_CPU").text),
+                        "allocated": int(xml_find_fb(host, "HOST_SHARE/CPU_USAGE", 0)),
+                        "total": int(xml_find_fb(host, "HOST_SHARE/MAX_CPU", 0)),
+                        "used": int(xml_find_fb(monitoring, "USED_CPU", 0)),
+                        "free": int(xml_find_fb(monitoring, "FREE_CPU", 0)),
                     },
                 },
                 {
                     "measurement": "host_memory",
                     "tags": tags,
                     "fields": {
-                        "allocated": int(host.find("HOST_SHARE/MEM_USAGE").text),
-                        "total": int(host.find("HOST_SHARE/MAX_MEM").text),
-                        "used": int(monitoring.find("USED_MEMORY").text),
-                        "free": int(monitoring.find("FREE_MEMORY").text),
+                        "allocated": int(xml_find_fb(host, "HOST_SHARE/MEM_USAGE", 0)),
+                        "total": int(xml_find_fb(host, "HOST_SHARE/MAX_MEM", 0)),
+                        "used": int(xml_find_fb(monitoring, "USED_MEMORY", 0)),
+                        "free": int(xml_find_fb(monitoring, "FREE_MEMORY", 0)),
                     },
                 },
                 {
                     "measurement": "rvms",
                     "tags": tags,
                     "fields": {
-                        "value": int(host.find("HOST_SHARE/RUNNING_VMS").text),
-                        "zombies": zombies,
+                        "value": int(xml_find_fb(host, "HOST_SHARE/RUNNING_VMS", 0)),
+                        "zombies": int(xml_find_fb(host, "TEMPLATE/TOTAL_ZOMBIES", 0)),
                     },
                 },
             ]
