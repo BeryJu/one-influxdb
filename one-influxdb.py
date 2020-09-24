@@ -40,7 +40,7 @@ def xml_get_fb(xml_obj, path) -> float:
 def xml_find_fb(xml_obj, path, default=""):
     """XML.find with a fallback"""
     obj = xml_obj.find(path)
-    if obj:
+    if obj is not None:
         return obj.text
     return default
 
