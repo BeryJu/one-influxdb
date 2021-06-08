@@ -23,7 +23,7 @@ services:
   collector:
     volumes:
       - /var/lib/one/.one/one_auth:/var/lib/one/.one/one_auth:ro
-    image: beryju/one-influxdb:latest
+    image: ghcr.io/beryju/one-influxdb
     environment:
       # ONE_SERVER: 'http://localhost:2633'
       INFLUX_SERVER: influxdb
