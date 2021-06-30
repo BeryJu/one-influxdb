@@ -9,6 +9,3 @@ verify_ssl = true
 influxdb = "*"
 lxml = "*"
 sentry-sdk = "*"
-
-[requires]
-python_version = "3.9"
