@@ -296,7 +296,7 @@ class Collector:
                 try:
                     with trans.start_child(op=f"collect_{col.__name__}"):
                         all_points += col()
-                except ConnectionRefusedError:
+                except (ConnectionRefusedError, TimeoutError):
                     print(f"[collection] connection refused")
                 except Exception as exc:
                     print(f"[collection] error: {exc}")
