@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "one-influxdb"
+version = "0.1.0"
+description = ""
+authors = ["Jens Langhammer <jens.langhammer@beryju.org>"]
+license = "GPLv3"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+influxdb = "^5.3.1"
+lxml = "^4.7.1"
+sentry-sdk = "^1.5.1"
+
+[tool.poetry.dev-dependencies]
+black = "*"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
