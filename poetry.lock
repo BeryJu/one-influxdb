@@ -81,7 +81,7 @@ requests = ">=2.17.0"
 six = ">=1.10.0"
 
 [package.extras]
-test = ["nose", "nose-cov", "mock", "requests-mock"]
+test = ["mock", "nose", "nose-cov", "requests-mock"]
 
 [[package]]
 name = "lxml"
@@ -172,7 +172,7 @@ use_chardet_on_py3 = ["chardet (>=3.0.2,<5)"]
 
 [[package]]
 name = "sentry-sdk"
-version = "1.9.5"
+version = "1.9.6"
 description = "Python client for Sentry (https://sentry.io)"
 category = "main"
 optional = false
@@ -180,10 +180,7 @@ python-versions = "*"
 
 [package.dependencies]
 certifi = "*"
-urllib3 = [
-    {version = ">=1.26.9", markers = "python_version >= \"3.5\""},
-    {version = ">=1.26.11", markers = "python_version >= \"3.6\""},
-]
+urllib3 = {version = ">=1.26.11", markers = "python_version >= \"3.6\""}
 
 [package.extras]
 aiohttp = ["aiohttp (>=3.5)"]
@@ -194,11 +191,11 @@ chalice = ["chalice (>=1.16.0)"]
 django = ["django (>=1.8)"]
 falcon = ["falcon (>=1.4)"]
 fastapi = ["fastapi (>=0.79.0)"]
-flask = ["flask (>=0.11)", "blinker (>=1.1)"]
+flask = ["blinker (>=1.1)", "flask (>=0.11)"]
 httpx = ["httpx (>=0.16.0)"]
-pure_eval = ["pure-eval", "executing", "asttokens"]
+pure_eval = ["asttokens", "executing", "pure-eval"]
 pyspark = ["pyspark (>=2.4.4)"]
-quart = ["quart (>=0.16.1)", "blinker (>=1.1)"]
+quart = ["blinker (>=1.1)", "quart (>=0.16.1)"]
 rq = ["rq (>=0.6)"]
 sanic = ["sanic (>=0.8)"]
 sqlalchemy = ["sqlalchemy (>=1.2)"]
@@ -230,14 +227,14 @@ optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*, !=3.5.*, <4"
 
 [package.extras]
-brotli = ["brotlicffi (>=0.8.0)", "brotli (>=1.0.9)", "brotlipy (>=0.6.0)"]
-secure = ["pyOpenSSL (>=0.14)", "cryptography (>=1.3.4)", "idna (>=2.0.0)", "certifi", "ipaddress"]
+brotli = ["brotli (>=1.0.9)", "brotlicffi (>=0.8.0)", "brotlipy (>=0.6.0)"]
+secure = ["certifi", "cryptography (>=1.3.4)", "idna (>=2.0.0)", "ipaddress", "pyOpenSSL (>=0.14)"]
 socks = ["PySocks (>=1.5.6,!=1.5.7,<2.0)"]
 
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "fd64fb8f0b31328a5cea4550958e96a1dfbd47d5f85af8a052ac33f09b1819c1"
+content-hash = "275017c7aa1336e57c96d15054c961ae31a7018d881b948430ae8ff7dea22c47"
 
 [metadata.files]
 black = [
@@ -422,8 +419,8 @@ requests = [
     {file = "requests-2.26.0.tar.gz", hash = "sha256:b8aa58f8cf793ffd8782d3d8cb19e66ef36f7aba4353eec859e74678b01b07a7"},
 ]
 sentry-sdk = [
-    {file = "sentry-sdk-1.9.5.tar.gz", hash = "sha256:2d7ec7bc88ebbdf2c4b6b2650b3257893d386325a96c9b723adcd31033469b63"},
-    {file = "sentry_sdk-1.9.5-py2.py3-none-any.whl", hash = "sha256:b4b41f90951ed83e7b4c176eef021b19ecba39da5b73aca106c97a9b7e279a90"},
+    {file = "sentry-sdk-1.9.6.tar.gz", hash = "sha256:f713f33ff7f82658c30e7e8cdec72c432218e6dd41b0f004905733793bd9719b"},
+    {file = "sentry_sdk-1.9.6-py2.py3-none-any.whl", hash = "sha256:630faec958e09b1151d88b8655bb749274c6b1acd19baa6f7a5ec3106276f752"},
 ]
 six = [
     {file = "six-1.16.0-py2.py3-none-any.whl", hash = "sha256:8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254"},
